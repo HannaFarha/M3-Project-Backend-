@@ -1,9 +1,10 @@
 const Vinyl = require("../models/Vinyl.model");
 const router = require("express").Router();
 
+
 router.get("/vinyls", async (req, res, next) => {
   try {
-    const Vinyl = await Vinyl.find().populate("user");
+    const vinyls = await Vinyl.find();
     console.log("Retrieved vinyl ->", vinyls);
     res.json(vinyls);
   } catch (error) {
@@ -15,7 +16,7 @@ router.get("/vinyls", async (req, res, next) => {
 //  GET /api/students/:studentId - Retrieves a specific student by id
 router.get("/vinyls/:vinylId", async (req, res) => {
   const { vinylId } = req.params;
-  const vinyl = await Vinyl.findById(vinylId).populate("User");
+  const vinyl = await Vinyl.findById(vinylId);
   res.json(vinyl);
 });
 
@@ -44,7 +45,7 @@ router.delete("/vinyl/:vinylId", (req, res, next) => {
   Vinyl.findByIdAndDelete(vinylId)
     .then((deleteVinyl) => {
       if (!deleteVinyl) {
-        return res.status(404).json({ error: "student not found" });
+        return res.status(404).json({ error: "vinyl not found" });
       }
       console.log("delete vinyl by ID", deleteVinyl);
       res.json({ message: "vinyl deleted successfully" });
