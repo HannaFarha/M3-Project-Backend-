@@ -2,7 +2,7 @@ require("dotenv").config();
 const User = require("../models/User.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-// const { isAuthenticated } = require("../middleware/route-guard.middleware");
+const { isAuthenticated } = require("../middlewares/route.guard.middleware");
 
 const router = require("express").Router();
 
@@ -28,48 +28,44 @@ router.post("/signup", async (req, res) => {
 });
 
 //login
-router.post("/login", async (req, res) => {
-  const payload = req.body; // email password
-  try {
-    const user = await User.findOne({
-      email: payload.email.toLowerCase().trim(),
-    });
-    if (user) {
-      // user try to authenticate
-      if (bcrypt.compareSync(payload.password, user.passwordHash)) {
-        //password match
-        console.log(payload);
-        const authToken = jwt.sign(
-          {
-            userId: user._id,
-          },
-          process.env.TOKEN_SECRET,
-          {
-            algorithm: "HS256",
-            expiresIn: "6h",
-          }
-        );
-        res.status(200).json({ token: authToken });
+router.post('/login', async (req, res) => {
+    const payload = req.body // { email, password }
+    try {
+      const potentialUser = await User.findOne({ email: payload.email.toLowerCase().trim() })
+  
+      if (potentialUser) {
+        // User matching the email
+        if (bcrypt.compareSync(payload.password, potentialUser.passwordHash)) {
+          // Password is correct
+          const authToken = jwt.sign(
+            {
+              userId: potentialUser._id,
+            },
+            process.env.TOKEN_SECRET,
+            {
+              algorithm: 'HS256',
+              expiresIn: '6h',
+            }
+          )
+          res.status(200).json({ token: authToken })
+        } else {
+          // Incorrect password
+          res.status(403).json({ message: 'Incorrect password' })
+        }
       } else {
-        //password not match
-        res.status(403).json({ message: "Incorrect password" });
+        // No user matching the email
+        res.status(404).json({ message: 'User not found' })
       }
-    } else {
-      // user not matching the email
-      res.status(404).json({ message: "Incorrect password" });
+    } catch (error) {
+      console.log(error)
+      res.status(500).json(error)
     }
-  } catch (error) {
-    console.log(error); // Log the error for debugging
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-
-//verify
-
-// router.get("/verify", isAuthenticated, async (req, res) => {
-//   console.log(req.tokenPayload);
-//   const currentUser = await User.findById(req.tokenPayload.userId);
-//   res.status(200).json(currentUser);
-// });
+  })
+  
+  router.get('/verify', isAuthenticated, async (req, res) => {
+    console.log(req.tokenPayload)
+    const currentUser = await User.findById(req.tokenPayload.userId)
+    res.status(200).json(currentUser)
+  })
 
 module.exports = router;
