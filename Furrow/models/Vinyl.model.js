@@ -1,29 +1,37 @@
-const { Schema, model } = require('mongoose')
+const {mongoose, Schema, model } = require('mongoose')
 
 // TODO: Please make sure you edit the Book model to whatever makes sense in this case
-const bookSchema = new Schema(
+const vinylSchema = new Schema(
   {
-    title: {
+    artist: {
       type: String,
-      required: [true, 'Title is required.'],
+      required: [true, 'Artist is required.'],
       trim: true,
     },
-    author: {
+    album: {
       type: String,
-      required: [true, 'Author is required.'],
+      required: [true, 'Album is required.'],
       trim: true,
     },
-    pages: {
-      type: Number,
-      required: [true, 'Pages is required.'],
+    types: {
+      type: String,
+      enum: ["Jazz, Rock, Electronic, Hip-hop, Funk" ],
     },
-  },
-  {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
-    timestamps: true,
+    years: {
+      type: Date,
+      
+    },
+    condition: {
+      type: String,
+      enum: ["Mint, Very_good, Fair" ],
+    },
+    createdBy:{
+      type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    },
   }
 )
 
-const Book = model('Book', bookSchema)
+const Vinyl = model('Vinyl', vinylSchema)
 
-module.exports = Book
+module.exports = Vinyl

@@ -12,10 +12,13 @@ const app = express()
 require('./config')(app)
 
 // 👇 Start handling routes here
-const indexRoutes = require('./routes/index.routes')
-app.use('/api', indexRoutes)
+const vinylRoutes = require('./routes/vinyl.routes')
+app.use('/api', vinylRoutes)
 const authRoutes = require('./routes/auth.routes')
 app.use('/auth', authRoutes)
+
+app.get('*', (req, res) => {
+    res.json('404 no page')})
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 //require('./error-handling')(app)
 
