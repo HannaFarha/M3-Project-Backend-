@@ -1,6 +1,6 @@
 // ℹ️ Gets access to environment variables/settings
-// https://www.npmjs.com/package/dotenv
-require('dotenv').config()
+// // https://www.npmjs.com/package/dotenv
+// require('dotenv').config()
 
 // Handles http requests (express is node js framework)
 // https://www.npmjs.com/package/express
@@ -16,6 +16,6 @@ const indexRoutes = require('./routes/index.routes')
 app.use('/api', indexRoutes)
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
-require('./error-handling')(app)
+//require('./error-handling')(app)
 
 module.exports = app
