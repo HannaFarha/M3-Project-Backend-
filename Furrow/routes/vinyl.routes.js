@@ -4,7 +4,7 @@ const router = require("express").Router();
 
 router.get("/vinyls", async (req, res, next) => {
   try {
-    const vinyls = await Vinyl.find();
+    const vinyls = await Vinyl.find().populate("createdBy");
     console.log("Retrieved vinyl ->", vinyls);
     res.json(vinyls);
   } catch (error) {
@@ -16,7 +16,7 @@ router.get("/vinyls", async (req, res, next) => {
 //  GET /api/students/:studentId - Retrieves a specific student by id
 router.get("/vinyls/:vinylId", async (req, res) => {
   const { vinylId } = req.params;
-  const vinyl = await Vinyl.findById(vinylId);
+  const vinyl = await Vinyl.findById(vinylId).populate("createdBy");
   res.json(vinyl);
 });
 
@@ -57,7 +57,9 @@ router.delete("/vinyl/:vinylId", (req, res, next) => {
 });
 
 router.post("/vinyls", async (req, res, next) => {
+    const currentUser="65b135b3482593d910f35fad"
   const payload = req.body;
+  payload.createdBy=currentUser;
   try {
     const newVinyl = await Vinyl.create(payload);
     res.status(201).json(newVinyl);
