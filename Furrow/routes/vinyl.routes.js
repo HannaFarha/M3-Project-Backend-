@@ -16,8 +16,14 @@ router.get("/vinyls", async (req, res, next) => {
 //  GET /api/students/:studentId - Retrieves a specific student by id
 router.get("/vinyls/:vinylId", async (req, res) => {
   const { vinylId } = req.params;
-  const vinyl = await Vinyl.findById(vinylId).populate("createdBy");
-  res.json(vinyl);
+  try {
+    const vinyl = await Vinyl.findById(vinylId);
+    res.status(200).json(vinyl)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'error while getting the Vinyl' })
+  }
+ 
 });
 
 //  PUT /api/students/:studentId - Updates a specific student by id
