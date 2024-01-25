@@ -45,23 +45,8 @@ router.put("/vinyl/:vinylId", isAuthenticated, async(req, res, next) => {
     console.log(error)
     res.status(500).json({ message: 'error while updating the Vinyl' })
   }
-
-
-//   Vinyl.findByIdAndUpdate(vinylId, updatedVinylData, { new: true })
-//     .then((updatedVinyl) => {
-//       if (!updatedVinyl) {
-//         return res.status(404).json({ error: "vinyl not found" });
-//       }
-//       console.log("updated vinyl by ID", updatedVinyl);
-//       res.json(updatedVinyl);
-//     })
-//     .catch((error) => {
-//       next(error);
-//       console.log("Error while updating vinyl data".error);
-//     });
  });
 
-//  DELETE /api/students/:studentId - Deletes a specific student by id
 router.delete("/vinyl/:vinylId",isAuthenticated, async(req, res, next) => {
   const vinylId = req.params.vinylId;
   const { userId } = req.tokenPayload
