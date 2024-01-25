@@ -1,6 +1,6 @@
 const Vinyl = require("../models/Vinyl.model");
 const router = require("express").Router();
-
+const { isAuthenticated } = require('../middlewares/route.guard.middleware')
 
 router.get("/vinyls", async (req, res, next) => {
   try {
@@ -21,45 +21,78 @@ router.get("/vinyls/:vinylId", async (req, res) => {
 });
 
 //  PUT /api/students/:studentId - Updates a specific student by id
-router.put("/vinyl/:vinylId", (req, res, next) => {
+router.put("/vinyl/:vinylId", isAuthenticated, async(req, res, next) => {
+    const { userId } = req.tokenPayload
   const vinylId = req.params.vinylId;
-  const updatedVinylData = req.body;
-  Vinyl.findByIdAndUpdate(vinylId, updatedVinylData, { new: true })
-    .then((updatedVinyl) => {
-      if (!updatedVinyl) {
-        return res.status(404).json({ error: "vinyl not found" });
-      }
-      console.log("updated vinyl by ID", updatedVinyl);
-      res.json(updatedVinyl);
-    })
-    .catch((error) => {
-      next(error);
-      console.log("Error while updating vinyl data".error);
-    });
-});
+//   const updatedVinylData = req.body;
+  const payload = req.body
+ 
+  try {
+    const vinylToUpdate = await Vinyl.findById(vinylId)
+    if (vinylToUpdate.createdBy == userId) {
+      const updatedVinyl = await Vinyl.findByIdAndUpdate(vinylId, payload, { new: true })
+      res.status(200).json(updatedVinyl)
+    } else {
+      res.status(403).json({ message: 'you are not the right user' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'error while updating the Vinyl' })
+  }
+
+
+//   Vinyl.findByIdAndUpdate(vinylId, updatedVinylData, { new: true })
+//     .then((updatedVinyl) => {
+//       if (!updatedVinyl) {
+//         return res.status(404).json({ error: "vinyl not found" });
+//       }
+//       console.log("updated vinyl by ID", updatedVinyl);
+//       res.json(updatedVinyl);
+//     })
+//     .catch((error) => {
+//       next(error);
+//       console.log("Error while updating vinyl data".error);
+//     });
+ });
 
 //  DELETE /api/students/:studentId - Deletes a specific student by id
-router.delete("/vinyl/:vinylId", (req, res, next) => {
+router.delete("/vinyl/:vinylId",isAuthenticated, async(req, res, next) => {
   const vinylId = req.params.vinylId;
+  const { userId } = req.tokenPayload
+  try {
+    const vinylToDelete = await Vinyl.findById(vinylId)
+    console.log(vinylToDelete, userId)
+    if (vinylToDelete.createdBy == userId) {
+      console.log('Deleting')
+      await Vinyl.findByIdAndDelete(vinylId)
+      res.status(204).json()
+    } else {
+      res.status(403).json({ message: 'you are not the right user' })
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'error while deleting the Vinyl' })
+  }
 
-  Vinyl.findByIdAndDelete(vinylId)
-    .then((deleteVinyl) => {
-      if (!deleteVinyl) {
-        return res.status(404).json({ error: "vinyl not found" });
-      }
-      console.log("delete vinyl by ID", deleteVinyl);
-      res.json({ message: "vinyl deleted successfully" });
-    })
-    .catch((error) => {
-      next(error);
-      console.error("Error while deleting vinyl by ID", error);
-    });
+
+
+//   Vinyl.findByIdAndDelete(vinylId)
+//     .then((deleteVinyl) => {
+//       if (!deleteVinyl) {
+//         return res.status(404).json({ error: "vinyl not found" });
+//       }
+//       console.log("delete vinyl by ID", deleteVinyl);
+//       res.json({ message: "vinyl deleted successfully" });
+//     })
+//     .catch((error) => {
+//       next(error);
+//       console.error("Error while deleting vinyl by ID", error);
+//     });
 });
 
-router.post("/vinyls", async (req, res, next) => {
-    const currentUser="65b135b3482593d910f35fad"
-  const payload = req.body;
-  payload.createdBy=currentUser;
+router.post("/vinyls",isAuthenticated, async (req, res, next) => {
+    const payload = req.body
+    const { userId } = req.tokenPayload
+  payload.createdBy = userId
   try {
     const newVinyl = await Vinyl.create(payload);
     res.status(201).json(newVinyl);
@@ -68,16 +101,6 @@ router.post("/vinyls", async (req, res, next) => {
     console.log(error);
   }
 });
-// router.get("/vinyl/cohort/:cohortId", (req, res, next) => {
-//   const { cohortId } = req.params;
-//   Vinyl.find({ cohort: cohortId })
-//     .populate("cohort")
-//     .then((students) => {
-//       res.json(students);
-//     })
-//     .catch((error) => {
-//       next(error);
-//       console.error("Error while retrieving students ->", error);
-//     });
-// });
+
+
 module.exports = router;
