@@ -15,7 +15,7 @@ const vinylSchema = new Schema(
     },
     types: {
       type: String,
-      enum: ["Jazz, Rock, Electronic, Hip-hop, Funk" ],
+      enum: ["Jazz", "Rock", "Electronic"," Hip-hop", "Funk" ],
     },
     years: {
       type: Date,
@@ -23,7 +23,7 @@ const vinylSchema = new Schema(
     },
     condition: {
       type: String,
-      enum: ["Mint, VeryGood, Fair"],
+      enum: ["Mint", "VeryGood", "Fair"],
     },
     createdBy:{
       type: mongoose.Schema.Types.ObjectId,
