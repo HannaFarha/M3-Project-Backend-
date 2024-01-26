@@ -19,7 +19,6 @@ const vinylSchema = new Schema(
     },
     years: {
       type: Date,
-      
     },
     condition: {
       type: String,
