@@ -17,8 +17,8 @@ router.get("/vinyls", async (req, res, next) => {
 router.get("/vinyls/:vinylId", async (req, res) => {
   const { vinylId } = req.params;
   try {
-    const vinyl = await Vinyl.findById(vinylId);
-    res.status(200).json(vinyl)
+    const vinyls = await Vinyl.findById(vinylId);
+    res.status(200).json(vinyls)
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'error while getting the Vinyl' })

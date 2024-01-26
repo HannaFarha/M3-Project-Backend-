@@ -1,6 +1,6 @@
 const {mongoose, Schema, model } = require('mongoose')
 
-// TODO: Please make sure you edit the Book model to whatever makes sense in this case
+// TODO: Please make sure you edit the Vinyl model to whatever makes sense in this case
 const vinylSchema = new Schema(
   {
     artist: {
@@ -23,12 +23,16 @@ const vinylSchema = new Schema(
     },
     condition: {
       type: String,
-      enum: ["Mint, Very_good, Fair" ],
+      enum: ["Mint, VeryGood, Fair"],
     },
     createdBy:{
       type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     },
+  },
+  {
+    // this second object adds extra properties: `createdAt` and `updatedAt`
+    timestamps: true,
   }
 )
 
