@@ -80,10 +80,10 @@ router.delete("/vinyl/:vinylId",isAuthenticated, async(req, res, next) => {
 //     });
 });
 
-router.post("/vinyls", async (req, res, next) => {
+router.post("/vinyls",isAuthenticated, async (req, res, next) => {
     const payload = req.body
-    // const { userId } = req.tokenPayload
-  payload.createdBy = "65b135b3482593d910f35fad"
+    const { userId } = req.tokenPayload
+  payload.createdBy = userId
   try {
     const newVinyl = await Vinyl.create(payload);
     res.status(201).json(newVinyl);
