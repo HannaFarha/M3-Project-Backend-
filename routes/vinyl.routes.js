@@ -1,4 +1,5 @@
 const Vinyl = require("../models/Vinyl.model");
+const Collection = require("../models/Collection.model");
 const router = require("express").Router();
 const { isAuthenticated } = require('../middlewares/route.guard.middleware')
 
