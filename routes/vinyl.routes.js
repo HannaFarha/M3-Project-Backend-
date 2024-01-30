@@ -13,7 +13,6 @@ router.get("/vinyls", async (req, res, next) => {
   }
 });
 
-//  GET /api/students/:studentId - Retrieves a specific student by id
 router.get("/vinyls/:vinylId", async (req, res) => {
   const { vinylId } = req.params;
   try {
@@ -26,11 +25,11 @@ router.get("/vinyls/:vinylId", async (req, res) => {
  
 });
 
-//  PUT /api/students/:studentId - Updates a specific student by id
+
 router.put("/vinyl/:vinylId", isAuthenticated, async(req, res, next) => {
     const { userId } = req.tokenPayload
   const vinylId = req.params.vinylId;
-//   const updatedVinylData = req.body;
+
   const payload = req.body
  
   try {
@@ -64,23 +63,36 @@ router.delete("/vinyl/:vinylId",isAuthenticated, async(req, res, next) => {
     res.status(500).json({ message: 'error while deleting the Vinyl' })
   }
 
-
-
-//   Vinyl.findByIdAndDelete(vinylId)
-//     .then((deleteVinyl) => {
-//       if (!deleteVinyl) {
-//         return res.status(404).json({ error: "vinyl not found" });
-//       }
-//       console.log("delete vinyl by ID", deleteVinyl);
-//       res.json({ message: "vinyl deleted successfully" });
-//     })
-//     .catch((error) => {
-//       next(error);
-//       console.error("Error while deleting vinyl by ID", error);
-//     });
 });
 
 router.post("/vinyls",isAuthenticated, async (req, res, next) => {
+    const payload = req.body
+    const { userId } = req.tokenPayload
+  payload.createdBy = userId
+  try {
+    const newVinyl = await Vinyl.create(payload);
+    res.status(201).json(newVinyl);
+  } catch (error) {
+    next(error);
+    console.log(error);
+  }
+});
+
+
+
+router.get("/collection",isAuthenticated , async (req, res, next) => {
+    try {
+      const Collections = await Collection.find().populate("vinyl");
+      console.log("Retrieved vinyl ->", Collections);
+      res.json(Collections);
+    } catch (error) {
+      next(error);
+      console.error("Error while retrieving Collection ->", error);
+    }
+
+  });
+
+  router.post("/collection/:vinylId",isAuthenticated, async (req, res, next) => {
     const payload = req.body
     const { userId } = req.tokenPayload
   payload.createdBy = userId

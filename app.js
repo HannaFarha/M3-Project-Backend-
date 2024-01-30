@@ -10,10 +10,12 @@ const app = express()
 
 // ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 require('./config')(app)
-
+const collectionRoutes = require('./routes/collection.routes')
+app.use('/coll', collectionRoutes)
 // 👇 Start handling routes here
 const vinylRoutes = require('./routes/vinyl.routes')
 app.use('/api', vinylRoutes)
+
 const authRoutes = require('./routes/auth.routes')
 app.use('/auth', authRoutes)
 
