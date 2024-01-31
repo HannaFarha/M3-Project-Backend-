@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { mongoose,Schema, model } = require("mongoose");
 
 const userSchema = new Schema(
   {
@@ -13,7 +13,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    
+    // wishlist: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    // ref: "vinyl",
+    // },
   },
   
 );
