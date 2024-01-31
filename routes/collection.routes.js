@@ -9,8 +9,9 @@ router.use("/collection", isAuthenticated);
 router.get("/collection", async (req, res, next) => {
     try {
         const userId = req.tokenPayload.userId;
+        console.log(userId)
         const collections = await Collection.find({ user: userId }).populate("user vinyl")
-        
+
         console.log("Retrieved collections ->", collections);
         res.json(collections);
     } catch (error) {
