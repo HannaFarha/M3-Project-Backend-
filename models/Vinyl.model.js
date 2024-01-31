@@ -24,6 +24,9 @@ const vinylSchema = new Schema(
       type: String,
       enum: ["Mint", "VeryGood", "Fair"],
     },
+    image: {
+      type: String,
+    },
     createdBy:{
       type: mongoose.Schema.Types.ObjectId,
     ref: "User",
