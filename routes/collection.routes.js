@@ -23,21 +23,18 @@ router.post("/collection/:vinylId", async (req, res, next) => {
         const { vinylId } = req.params;
         console.log('User ID:', userId);
         console.log('Vinyl ID:', vinylId);
+
         const vinylExists = await Vinyl.findById(vinylId);
         console.log('Vinyl exists:', vinylExists); 
+
         if (!vinylExists) {
             console.log('Vinyl not found'); 
             return res.status(404).json({ message: "Vinyl not found" });
         }
-        const collections = await Collection.find()
-        if (!collections._id) {
-            const newCollection = await Collection.create({ user: userId });
-        } else {
-            const updateCollection = await Collection.findOneAndUpdate({user: userId},{$push:{vinyl: vinylId }})
+        const newCollection = await Collection.create({ user: userId });
+        const updateCollection = await Collection.findOneAndUpdate({user: userId},{$push:{vinyl: vinylId }})
         console.log('New collection:', updateCollection); 
         res.status(201).json(updateCollection);
-        }
-        
     } catch (error) {
         next(error);
         console.error("Error while adding vinyl to collection:", error);
