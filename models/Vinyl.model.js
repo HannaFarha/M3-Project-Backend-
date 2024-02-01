@@ -15,7 +15,7 @@ const vinylSchema = new Schema(
     },
     types: {
       type: String,
-      enum: ["Jazz", "Rock", "Electronic"," Hip-hop", "Funk" ],
+      enum: ["Jazz", "Rock", "Electronic","Hip-hop", "Funk" ],
     },
     year: {
       type: String,
