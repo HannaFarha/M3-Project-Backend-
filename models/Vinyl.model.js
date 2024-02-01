@@ -18,7 +18,7 @@ const vinylSchema = new Schema(
       enum: ["Jazz", "Rock", "Electronic"," Hip-hop", "Funk" ],
     },
     year: {
-      type: Date,
+      type: String,
     },
     condition: {
       type: String,
